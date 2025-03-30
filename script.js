@@ -1,7 +1,13 @@
-let display = document.getElementById("display");
 let currentInput = "";
 let operator = "";
-let firstOperand = "";
+let previousInput = "";
+
+function clearDisplay() {
+    document.getElementById("display").value = "";
+    currentInput = "";
+    operator = "";
+    previousInput = "";
+}
 
 function appendNumber(number) {
     currentInput += number;
@@ -16,44 +22,36 @@ function appendDecimal() {
 }
 
 function setOperator(op) {
-    if (currentInput === "") return;
-    firstOperand = currentInput;
+    if (currentInput === "" && previousInput === "") return; // Prevent operator without number
+
+    if (previousInput !== "") {
+        calculateResult(); // Auto-calculate if chaining operations
+    }
+
     operator = op;
+    previousInput = currentInput;
     currentInput = "";
+
+    // ✅ Show full expression including operator
+    display.value = previousInput + operator;
 }
+
+
 
 function calculateResult() {
-    if (firstOperand === "" || currentInput === "") return;
-    let result;
-    switch (operator) {
-        case "+":
-            result = parseFloat(firstOperand) + parseFloat(currentInput);
-            break;
-        case "-":
-            result = parseFloat(firstOperand) - parseFloat(currentInput);
-            break;
-        case "*":
-            result = parseFloat(firstOperand) * parseFloat(currentInput);
-            break;
-        case "/":
-            result = parseFloat(firstOperand) / parseFloat(currentInput);
-            break;
-        default:
-            return;
-    }
-    currentInput = result.toString();
-    firstOperand = "";
-    operator = "";
-    updateDisplay();
-}
+    if (previousInput === "" || currentInput === "") return; // Prevent calculation if incomplete
 
-function clearDisplay() {
+    let expression = previousInput + operator + currentInput; // Full expression
+    let result = eval(expression); // Perform calculation
+
+    display.value = expression + " = " + result; // ✅ Show "5+3 = 8"
+
+    // Reset values for the next calculation
+    previousInput = result.toString();
     currentInput = "";
-    firstOperand = "";
     operator = "";
-    updateDisplay();
 }
 
 function updateDisplay() {
-    display.value = currentInput;
+    document.getElementById("display").value = currentInput;
 }

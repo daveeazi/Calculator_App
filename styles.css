@@ -72,6 +72,7 @@ button.clear {
 
     .display {
         width: 100%;
+        margin-left: -2%; /* Moves display 10% to the left for mobile responsiveness*/
     }
 }
 
